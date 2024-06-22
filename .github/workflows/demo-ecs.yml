@@ -35,7 +35,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@fdb92e6b7b2c91f0556dfb503d74b444c3e09b2d
+        uses: docker/setup-buildx-action@v3
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
