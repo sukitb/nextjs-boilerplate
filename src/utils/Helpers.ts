@@ -9,3 +9,14 @@ export const getBaseUrl = () => {
 
   return "http://localhost:3000";
 };
+
+export const getEnvirontmentName = () => {
+  if (
+    process.env.NEXT_PUBLIC_ENVIRONMENT &&
+    process.env.NEXT_PUBLIC_ENVIRONMENT !== "development"
+  ) {
+    return process.env.NEXT_PUBLIC_ENVIRONMENT;
+  }
+
+  return "development";
+};
