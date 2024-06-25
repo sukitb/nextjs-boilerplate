@@ -1,22 +1,40 @@
-name: Deploy to Amazon ECS
+name: CI/CD Pipeline
 
 on:
-  workflow_run:
-    workflows: ["Run Unit tests"]
-    types:
-      - completed
+  push:
+    branches:
+      - main # FIXME: Change this to your default production branch
 
 env:
-  AWS_REGION: ap-southeast-1 # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: nextjs-boilerplate # set this to your Amazon ECR repository name
-  ECS_SERVICE: NextjsBoilerplate # set this to your Amazon ECS service name
-  ECS_CLUSTER: NextjsBoilerplateCluster # set this to your Amazon ECS cluster name
-  TASK_DEFINITION_FAMILY: NextjsBoilerplate # set this to your task definition family name
-  CONTAINER_NAME: nextjs-boilerplate # set this to the name of the container in the containerDefinitions section of your task definition
+  AWS_REGION: ap-southeast-1 # FIXME: set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: nextjs-boilerplate # FIXME: set this to your Amazon ECR repository name
+  ECS_SERVICE: NextjsBoilerplate # FIXME: set this to your Amazon ECS service name
+  ECS_CLUSTER: NextjsBoilerplateCluster # FIXME: set this to your Amazon ECS cluster name
+  TASK_DEFINITION_FAMILY: NextjsBoilerplate # FIXME: set this to your task definition family name
+  CONTAINER_NAME: nextjs-boilerplate # FIXME: set this to the name of the container in the containerDefinitions section of your task definition
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
