@@ -12,10 +12,10 @@ export default function NameCard({ firstName, lastName }: NameCardProps) {
   return (
     <>
       <div
-        className="px-8"
+        className="p-4"
         style={{ backgroundColor: "grey", maxWidth: "200px" }}
       >
-        <p>
+        <p className="text-center">
           {capitalizeFLetter(firstName) + " " + capitalizeFLetter(lastName)}
         </p>
       </div>
