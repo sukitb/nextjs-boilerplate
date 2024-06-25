@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # FIXME: Change this to your default production branch
+      - production # FIXME: Change this to your default production branch
 
 env:
   AWS_REGION: ap-southeast-1 # FIXME: set this to your preferred AWS region, e.g. us-west-1
