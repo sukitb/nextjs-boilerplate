@@ -5,7 +5,7 @@ export interface NameCardProps {
 
 export default function NameCard({ firstName, lastName }: NameCardProps) {
   function capitalizeFLetter(string: string) {
-    if (!string) return "";
+    if (!string) return "-";
     return string[0].toUpperCase() + string.slice(1);
   }
 
