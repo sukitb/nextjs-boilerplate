@@ -9,11 +9,14 @@ import { Space } from "antd";
 
 const environtmentName = getEnvirontmentName();
 
+const today = new Date();
+const todayString = today.toDateString();
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1>This is GrowsIT NextJS Boilerplate</h1>
-      <h2>Hello aws</h2>
+      <h2>Hello aws at {todayString}</h2>
       <Card
         title="Ant Design is Already installed"
         bordered={true}
