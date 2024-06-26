@@ -4,7 +4,7 @@ test("has title", async ({ page }) => {
   await page.goto("http://localhost:3000/");
 
   // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Check Test fail/);
+  await expect(page).toHaveTitle(/GrowsIT Next.js Startered/);
 });
 
 test("get started link", async ({ page }) => {
