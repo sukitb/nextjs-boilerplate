@@ -176,7 +176,7 @@ npm run test:e2e:ui
 
 โดย Playwright UI จะเปิดขึ้นมาโดยอัตโนมัติผ่าน Chromium
 
-## Component Documenation (Storybook)
+## Component Documentation (Storybook)
 
 - Component Doc ใช้ library [Storybook](https://storybook.js.org/) ในการทำ storybook
 - file config ของ storybook อยู่ที่ `.storybook/main.js` และ `.storybook/preview.js`
@@ -241,7 +241,11 @@ export const metadata: Metadata = {
 
 ## CI/CD
 
-workflow
+CI/CD จะใช้ [Github Actions](https://docs.github.com/en/actions) ในการทำงานโดยถูกเขียนไว้ในไฟล์ `.github/workflows/production.yml`
+
+เบื้องต้นจะทำการ trigger จากการ push ไปที่ branch `production`
+
+โดยมีภาพรวม workflow ดังนี้
 
 ```mermaid
 graph TD;
@@ -274,6 +278,8 @@ graph TD;
     unit-test -->|Tests Fail| Stop[Stop CI/CD]
     e2e-test --->|Tests Fail| Stop
 
+    Stop --> Line[Line Notify]
+
 
     subgraph Deployment
         C1[Checkout Code]
@@ -296,3 +302,31 @@ graph TD;
     click C8 href "https://github.com/aws-actions/amazon-ecs-deploy-task-definition" "aws-actions/amazon-ecs-deploy-task-definition@v1"
 
 ```
+
+### Setup CI/CD environtment
+
+#### 1. Github Workflow Environment
+
+เบื้องต้นมี ค่า environment ที่ต้อง set ใน Github Workflow file ดังนี้
+
+```yml
+env:
+  AWS_REGION: ap-southeast-1 # FIXME: set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: nextjs-boilerplate # FIXME: set this to your Amazon ECR repository name
+  ECS_SERVICE: NextjsBoilerplate # FIXME: set this to your Amazon ECS service name
+  ECS_CLUSTER: NextjsBoilerplateCluster # FIXME: set this to your Amazon ECS cluster name
+  TASK_DEFINITION_FAMILY: NextjsBoilerplate # FIXME: set this to your task definition family name
+  CONTAINER_NAME: nextjs-boilerplate # FIXME: set this to the name of the container in the containerDefinitions section of your task definition
+```
+
+#### 2. Github Workflow Secrets
+
+เบื้องต้นมี ค่า secret ที่ต้อง set ใน Github Workflow ดังนี้
+
+```yml
+${{ secrets.AWS_ACCESS_KEY_ID }}
+${{ secrets.AWS_SECRET_ACCESS_KEY }}
+${{ secrets.LINE_NOTIFY_TOKEN }}
+```
+
+การ set secret สามารถทำได้โดยสามารถดูรายละเอียดได้ที่ [Github Secrets](https://docs.github.com/en/actions/reference/encrypted-secrets)
