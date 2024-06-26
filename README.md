@@ -239,11 +239,60 @@ export const metadata: Metadata = {
 
 รายละเอียดของ metadata สามารถดูได้ที่ [NextJS Metadata File Conventions](https://nextjs.org/docs/getting-started/project-structure#metadata-file-conventions)
 
-### 3. Deployment
+## CI/CD
 
 workflow
 
 ```mermaid
+graph TD;
+    A[Push to Production Branch] --> unit-test
 
+    subgraph unit-test[Run Unit Tests]
+        B1[Checkout Code]
+        B2[Set up Node.js]
+        B3[Install Dependencies]
+        B4[Run Tests]
+        B1 --> B2 --> B3 --> B4
+    end
+
+    subgraph e2e-test[Run E2E Tests]
+    D1[Checkout code]
+    D2[Set up Node.js]
+    D3[Set up Node.js]
+    D4[Install dependencies]
+    D5[Install Playwright Browsers]
+    D6[Build the application]
+    D7[Start application server]
+    D8[Wait for server to be ready]
+    D9[Run Playwright tests]
+    D1 --> D2 --> D3 --> D4 --> D5 --> D6 --> D7 --> D8 --> D9
+    end
+
+    unit-test -->|Tests Pass| e2e-test
+    e2e-test -->|Tests Pass| Deployment[Deploy to Amazon ECS]
+
+    unit-test -->|Tests Fail| Stop[Stop CI/CD]
+    e2e-test --->|Tests Fail| Stop
+
+
+    subgraph Deployment
+        C1[Checkout Code]
+        C2[Configure AWS Credentials]
+        C3[Login to Amazon ECR]
+        C4[Set up Docker Buildx]
+        C5[Build, Tag, and Push Image to Amazon ECR]
+        C6[Download Task Definition]
+        C7[Fill in New Image ID in Task Definition]
+        C8[Deploy Amazon ECS Task Definition]
+        C1 --> C2 --> C3 --> C4 --> C5 --> C6 --> C7 --> C8
+    end
+
+    click B1 href "https://github.com/actions/checkout" "actions/checkout@v2"
+    click B2 href "https://github.com/actions/setup-node" "actions/setup-node@v2"
+    click C2 href "https://github.com/aws-actions/configure-aws-credentials" "aws-actions/configure-aws-credentials@v1"
+    click C3 href "https://github.com/aws-actions/amazon-ecr-login" "aws-actions/amazon-ecr-login@v1"
+    click C4 href "https://github.com/docker/setup-buildx-action" "docker/setup-buildx-action@v1"
+    click C7 href "https://github.com/aws-actions/amazon-ecs-render-task-definition" "aws-actions/amazon-ecs-render-task-definition@v1"
+    click C8 href "https://github.com/aws-actions/amazon-ecs-deploy-task-definition" "aws-actions/amazon-ecs-deploy-task-definition@v1"
 
 ```

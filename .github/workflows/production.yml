@@ -30,8 +30,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run unit tests
-        run: npm test
+      - name: Run unit tests and generate report
+        run: npm test -- --json --outputFile=test-results.json
+      
+      - name: Notify
+        if: failure()
+        uses: louis70109/line-notify-action@master
+        with: 
+          token: ${{ secrets.LINE_NOTIFY_TOKEN }}
+          message: "Unit test failed please check the report at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
   e2e-test:
     name: Run E2E Tests
@@ -55,7 +62,7 @@ jobs:
 
       - name: Build the application
         run: npm run build
-      
+
       - name: Start application server
         run: |
           node .next/standalone/server.js &
@@ -76,9 +83,6 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-
-      
-      
 
   deploy:
     name: Deploy to Amazon ECS
