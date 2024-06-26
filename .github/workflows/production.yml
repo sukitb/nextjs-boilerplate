@@ -73,7 +73,7 @@ jobs:
   deploy:
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
-    needs: test # This ensures the deploy job runs only if the test job succeeds
+    needs: [unit-test, e2e-test] # This ensures the deploy job runs only if both the unit-test and e2e-test jobs succeed
     environment: production
 
     steps:
