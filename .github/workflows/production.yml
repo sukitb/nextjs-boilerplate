@@ -53,6 +53,20 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Build the application
+        run: npm run build
+      
+      - name: Start application server
+        run: |
+          node .next/standalone/server.js &
+        env:
+          PORT: 3000
+
+      - name: Wait for server to be ready
+        run: |
+          # Wait for the server to be ready
+          npx wait-on http://localhost:3000
+
       - name: Run Playwright tests
         run: npx playwright test
 
@@ -62,6 +76,8 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      
       
 
   deploy:
