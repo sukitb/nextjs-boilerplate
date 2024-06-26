@@ -20,18 +20,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run unit tests
-        run: npm test
+      - name: Run unit tests and generate report
+        run: npm test -- --json --outputFile=test-results.json
+      
+      - name: Notify
+        if: failure()
+        uses: louis70109/line-notify-action@master
+        with: 
+          token: ${{ secrets.LINE_NOTIFY_TOKEN }}
+          message: "Unit test failed please check the report at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
   e2e-test:
     name: Run E2E Tests
@@ -40,20 +47,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Build the application
+        run: npm run build
+
       - name: Start application server
         run: |
-          npm run build
-          npm start &
+          node .next/standalone/server.js &
         env:
           PORT: 3000
 
@@ -62,13 +74,15 @@ jobs:
           # Wait for the server to be ready
           npx wait-on http://localhost:3000
 
-      - name: Run E2E tests
-        run: npm run test:e2e
+      - name: Run Playwright tests
+        run: npx playwright test
 
-      - name: Stop application server
-        run: |
-          # Stop the server
-          kill $(jobs -p)
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
   deploy:
     name: Deploy to Amazon ECS

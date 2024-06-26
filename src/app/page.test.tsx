@@ -5,7 +5,7 @@ describe("Page", () => {
   it("renders the page", () => {
     render(<Page />);
     expect(
-      screen.getByText("Ant Design is Already installed"),
+      screen.getByText("Ant Design is Already installe"),
     ).toBeInTheDocument();
   });
 });
