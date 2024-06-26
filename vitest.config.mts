@@ -12,10 +12,12 @@ export default defineConfig({
     coverage: {
       include: ["src/**/*"],
       exclude: ["src/**/*.stories.{js,jsx,ts,tsx}", "**/*.d.ts"],
-      reporter: ["html"],
+      reporter: ["html", "json"],
+      reportOnFailure: true,
     },
     environmentMatchGlobs: [["**/*.test.tsx", "jsdom"]],
     setupFiles: ["./vitest-setup.ts"],
+    outputFile: "./test-results.json",
     env: loadEnv("", process.cwd(), ""),
   },
 });
