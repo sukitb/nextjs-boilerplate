@@ -12,11 +12,9 @@
     "test:ui": "vitest --ui",
     "test:json": "vitest --reporter=json",
     "test:e2e": "playwright test",
-    "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build",
-    "storybook:serve": "http-server storybook-static --port 6006 --silent",
-    "serve-storybook": "run-s storybook:*",
-    "test-storybook:ci": "start-server-and-test serve-storybook http://127.0.0.1:6006 test-storybook"
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.0",
