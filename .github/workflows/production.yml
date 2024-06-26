@@ -30,8 +30,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run unit tests and generate report
-        run: npm test -- --json --outputFile=test-results.json
+      - name: Run unit tests
+        run: npm test
       
       - name: Notify
         if: failure()
